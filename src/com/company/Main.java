@@ -5,9 +5,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Stack;
 
 public class Main {
+
+    static final Map<Integer, Character> B_MAP = Map.of(
+            1, '(',
+            2, ')',
+            3, '{',
+            4, '}',
+            5, '[',
+            6, ']'
+    );
 
     public static void main(String[] args) throws IOException {
         FileReader in = null;
@@ -21,40 +31,27 @@ public class Main {
         while (true) {
             assert in != null;
             if ((ch = in.read()) == -1) break;
-            if (ch == (int) '(' | ch == (int) ')' | ch == (int) '{'
-                    | ch == (int) '}' | ch == (int) '[' | ch == (int) ']') {
-                linkedList.add((char) ch);
-            }
+            if (B_MAP.containsValue((char) ch)) linkedList.add((char) ch);
         }
         System.out.println(bracketsInspector(linkedList));
     }
 
     static boolean bracketsInspector(LinkedList<Character> linkedList) {
         Stack<Character> stack = new Stack<>();
-        LinkedList<Character> queue = new LinkedList<>();
-
         while (!linkedList.isEmpty()) {
-
-            if (linkedList.peek() == '(' | linkedList.peek() == '{' | linkedList.peek() == '[') {
-                if (!queue.isEmpty()) {
-                    checkBrackets(queue, stack);
-                }
+            if (linkedList.peek() == B_MAP.get(1) || linkedList.peek() == B_MAP.get(3)
+                    || linkedList.peek() == B_MAP.get(5)) {
                 stack.push(linkedList.pop());
             } else {
-                if (stack.size() == queue.size()) return false;
-                queue.offer(linkedList.pop());
+                if (stack.isEmpty()) return false;
+                if (!checkBrackets(linkedList, stack)) return false;
             }
         }
-        if (queue.size() != stack.size()) return false;
-        return checkBrackets(queue, stack);
+        return stack.isEmpty();
     }
 
     static boolean checkBrackets(LinkedList<Character> queue, Stack<Character> stack) {
-        while (!queue.isEmpty()) {
-            int expression = (int) queue.pop() - (int) stack.pop();
-            if (expression < 0 | expression > 2) return false;
-        }
-        return true;
+        int expresion = (int) queue.pop() - (int) stack.pop();
+        return (expresion > 0 && expresion < 3);
     }
 }
-
