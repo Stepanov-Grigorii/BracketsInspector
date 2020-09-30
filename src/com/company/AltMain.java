@@ -13,20 +13,18 @@ public class AltMain {
         boolean check = check(strFileContent);
         System.out.println("check = " + check);
     }
-    static boolean check(String content){
+
+    static boolean check(String content) {
         Map<Character, Character> mapOfBrackets = Map.of(
                 ')', '(',
                 '}', '{',
                 ']', '['
         );
         Stack<Character> brackets = new Stack<>();
-        for (int i = 0; i < content.length(); i++) {
-            Character current = content.charAt(i);
-            if(mapOfBrackets.containsValue(current)){
+        for (Character current : content.toCharArray()) {
+            if (mapOfBrackets.containsValue(current)) {
                 brackets.push(current);
-                continue;
-            }
-            if(mapOfBrackets.containsKey(current) && (brackets.isEmpty() || !brackets.pop().equals(mapOfBrackets.get(current)))){
+            } else if (mapOfBrackets.containsKey(current) && (brackets.isEmpty() || !brackets.pop().equals(mapOfBrackets.get(current)))) {
                 return false;
             }
         }
